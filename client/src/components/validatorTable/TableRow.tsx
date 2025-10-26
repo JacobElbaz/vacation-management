@@ -31,10 +31,18 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
           </span>
         </td>
         <td className="d-flex gap-2">
-          <button className="btn btn-primary btn-sm" onClick={handleApprove}>
+          <button 
+            className="btn btn-primary btn-sm" 
+            onClick={handleApprove}
+            disabled={request.status === "Approved"}
+          >
             Approve
           </button>
-          <button className="btn btn-outline-danger btn-sm" onClick={() => onReject(request.id)}>
+          <button 
+            className="btn btn-outline-danger btn-sm" 
+            onClick={() => onReject(request.id)}
+            disabled={request.status === "Rejected"}
+          >
             Reject
           </button>
         </td>
