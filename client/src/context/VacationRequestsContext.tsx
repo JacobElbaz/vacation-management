@@ -18,17 +18,29 @@ interface UpdateRequestStatusData {
   comments?: string;
 }
 
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+}
+
 interface VacationRequestsContextType {
   requests: VacationRequest[];
   isLoading: boolean;
   error: string | null;
+  pagination: PaginationInfo | null;
+  currentPage: number;
+  statusFilter: string | null;
   submitRequest: (data: SubmitRequestData) => Promise<VacationRequest | null>;
   updateRequestStatus: (
     requestId: number,
     data: UpdateRequestStatusData
   ) => Promise<boolean>;
   loadMyRequests: (userId: number) => Promise<void>;
-  loadAllRequests: () => Promise<void>;
+  loadAllRequests: (page?: number, limit?: number, status?: string) => Promise<void>;
+  setCurrentPage: (page: number) => void;
+  setStatusFilter: (status: string | null) => void;
   refresh: (userId?: number) => Promise<void>;
 }
 
@@ -40,6 +52,9 @@ export const VacationRequestsProvider = ({ children }: { children: ReactNode }) 
   const [requests, setRequests] = useState<VacationRequest[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
   // Load vacation requests for a specific user
   const loadMyRequests = useCallback(async (userId: number) => {
@@ -63,12 +78,25 @@ export const VacationRequestsProvider = ({ children }: { children: ReactNode }) 
   }, []);
 
   // Load all vacation requests (for validators/managers)
-  const loadAllRequests = useCallback(async () => {
+  const loadAllRequests = useCallback(async (page?: number, limit?: number, status?: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get("/vacations");
-      setRequests(response.data);
+      const params: Record<string, string | number> = {};
+      if (page) params.page = page;
+      if (limit) params.limit = limit;
+      if (status) params.status = status;
+      
+      const response = await api.get("/vacations", { params });
+      
+      // Handle paginated response
+      if (response.data.vacations) {
+        setRequests(response.data.vacations);
+        setPagination(response.data.pagination);
+      } else {
+        setRequests(response.data);
+        setPagination(null);
+      }
     } catch (err) {
       const errorMessage =
         err instanceof AxiosError
@@ -147,11 +175,22 @@ export const VacationRequestsProvider = ({ children }: { children: ReactNode }) 
       if (userId !== undefined) {
         await loadMyRequests(userId);
       } else {
-        await loadAllRequests();
+        await loadAllRequests(currentPage, 10, statusFilter || undefined);
       }
     },
-    [loadMyRequests, loadAllRequests]
+    [loadMyRequests, loadAllRequests, currentPage, statusFilter]
   );
+
+  // Handler for page change
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+  }, []);
+
+  // Handler for status filter change
+  const handleStatusFilterChange = useCallback((status: string | null) => {
+    setStatusFilter(status);
+    setCurrentPage(1); // Reset to first page when filter changes
+  }, []);
 
   return (
     <VacationRequestsContext.Provider
@@ -159,10 +198,15 @@ export const VacationRequestsProvider = ({ children }: { children: ReactNode }) 
         requests,
         isLoading,
         error,
+        pagination,
+        currentPage,
+        statusFilter,
         submitRequest,
         updateRequestStatus,
         loadMyRequests,
         loadAllRequests,
+        setCurrentPage: handlePageChange,
+        setStatusFilter: handleStatusFilterChange,
         refresh,
       }}
     >
