@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../api/axiosInstance";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import type { User } from "../types";
 
 interface RequestFormPopupProps {
   onClose: () => void;
@@ -14,24 +15,33 @@ const RequestFormPopup = ({ onClose }: RequestFormPopupProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    // Get current user from localStorage
+    const currentUserStr = localStorage.getItem("currentUser");
+    if (!currentUserStr) {
+      toast.error("User not found. Please select a user from the home page.");
+      return;
+    }
+    const currentUser: User = JSON.parse(currentUserStr);
+
     setIsLoading(true);
     try {
-      const { data } = await api.post("/vacation-requests", {
+      await api.post("/vacations", {
+        user_id: currentUser.id,
         start_date: startDate,
         end_date: endDate,
         reason: reason,
       });
-      if (data.status === 201) {
-        toast.success("Vacation request submitted successfully");
-        onClose(); // Fermer le modal après succès
-      } else {
-        toast.error("Failed to submit vacation request");
-      }
+      toast.success("Vacation request submitted successfully");
+      onClose();
+      // Reset form
+      setStartDate("");
+      setEndDate("");
+      setReason("");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message);
+        toast.error(error.response?.data?.message || "Error submitting vacation request");
       } else {
-        toast.error("Failed to submit vacation request");
+        toast.error("Error submitting vacation request");
       }
     }
     setIsLoading(false);

@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router";
+import { BrowserRouter as Router, Route, Routes } from "react-router";
+import Home from "./pages/Home";
 import RequesterDashboard from "./pages/RequesterDashboard";
 import ValidatorDashboard from "./pages/ValidatorDashboard";
 import NotFound from "./pages/NotFound";
@@ -9,8 +10,8 @@ function App() {
     <Router>
       <Toaster />
       <Routes>
-        {/* Default redirect */}
-        <Route path="/" element={<Navigate to="/requester" />} />
+        {/* Home Page */}
+        <Route path="/" element={<Home />} />
         
         {/* Requester Interface */}
         <Route path="/requester" element={<RequesterDashboard />} />

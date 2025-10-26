@@ -6,3 +6,9 @@ export type VacationRequest = {
     reason: string;
     status: string;
 }
+
+export type User = {
+    id: number;
+    name: string;
+    role: "Requester" | "Validator";
+}
