@@ -1,9 +1,16 @@
 import { Router } from "express";
+import {
+  createVacation,
+  getMyVacations,
+  getAllVacations,
+  updateVacationStatus,
+} from "../controllers/vacationController";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-    res.send("Hello World");
-});
+router.post("/", createVacation);
+router.get("/me", getMyVacations);
+router.get("/", getAllVacations);
+router.patch("/:id", updateVacationStatus);
 
 export default router;
