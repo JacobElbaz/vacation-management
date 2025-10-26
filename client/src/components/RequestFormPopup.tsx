@@ -24,6 +24,31 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
     }
     const currentUser: User = JSON.parse(currentUserStr);
 
+    // Validate dates
+    if (!startDate || !endDate) {
+      toast.error("Please select both start and end dates");
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(startDate);
+
+    if (start < today) {
+      toast.error("Start date cannot be in the past");
+      return;
+    }
+
+    if (endDate < startDate) {
+      toast.error("End date must be after start date");
+      return;
+    }
+
+    if (!reason.trim()) {
+      toast.error("Please provide a reason");
+      return;
+    }
+
     setIsLoading(true);
     try {
       await api.post("/vacations", {
@@ -40,7 +65,11 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
       onSuccess?.();
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Error submitting vacation request");
+        const errorMessage = error.response?.data?.message || 
+                           error.response?.data?.error ||
+                           error.response?.data?.errors?.[0]?.msg ||
+                           "Error submitting vacation request";
+        toast.error(errorMessage);
       } else {
         toast.error("Error submitting vacation request");
       }
@@ -71,6 +100,8 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
                   id="startDate"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  max={endDate || undefined}
                 />
               </div>
               <div className="form-group">
@@ -81,6 +112,7 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
                   id="endDate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  min={startDate || new Date().toISOString().split('T')[0]}
                 />
               </div>
               <div className="form-group">
