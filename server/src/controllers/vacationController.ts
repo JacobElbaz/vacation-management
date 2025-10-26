@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import VacationRequest from "../models/VacationRequest";
 import User from "../models/User";
 import { createError } from "../middleware/errorHandler";
+import { Op } from "sequelize";
 
 export const createVacation = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,7 +32,9 @@ export const createVacation = async (req: Request, res: Response, next: NextFunc
     const overlappingVacations = await VacationRequest.findAll({
       where: {
         user_id,
-        status: "Pending",
+        status: {
+          [Op.or]: ["Pending", "Approved"],
+        },
       },
     });
 
@@ -45,7 +48,7 @@ export const createVacation = async (req: Request, res: Response, next: NextFunc
         (endDate >= vacationStart && endDate <= vacationEnd) ||
         (startDate <= vacationStart && endDate >= vacationEnd)
       ) {
-        throw createError(409, "You already have a pending vacation request for this date range");
+        throw createError(409, "You already have a vacation request for this date range");
       }
     }
 
