@@ -51,8 +51,10 @@ Language | TypeScript
 ## 🚀 Quick Start (with Docker)
 
 1. Clone the repository
+```bash
 git clone https://github.com/yourusername/vacation-management.git
 cd vacation-management
+```
 
 2. Start all services
 ```bash
@@ -72,15 +74,19 @@ This will:
 
 The main environment variables are passed automatically by Docker:
 
-Backend
+**Backend**:
+```env
 DB_NAME=vacationdb
 DB_USER=postgres
 DB_PASS=postgres
 DB_HOST=db
 PORT=4000
+```
 
-Frontend
+**Frontend**:
+```env
 VITE_API_URL=http://localhost:4000/api
+```
 
 ## 🧠 Development Notes
 
