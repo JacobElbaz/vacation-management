@@ -135,6 +135,12 @@ export const updateVacationStatus = async (req: Request, res: Response, next: Ne
       throw createError(404, "Vacation request not found");
     }
 
+    // Check if the status is already the same
+    const currentStatus = (vacation.get({ plain: true }) as any).status;
+    if (currentStatus === status) {
+      throw createError(400, `This vacation request is already ${status}`);
+    }
+
     await VacationRequest.update({ status, comments }, { where: { id } });
 
     res.status(200).json({
