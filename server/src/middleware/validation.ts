@@ -47,6 +47,9 @@ export const validateUpdateVacationStatus = [
   body("status")
     .isIn(["Pending", "Approved", "Rejected"])
     .withMessage("Status must be one of: Pending, Approved, Rejected"),
+  body("validatorId")
+    .isInt({ min: 1 })
+    .withMessage("Validator ID must be a positive integer"),
   body("comments")
     .optional()
     .isLength({ max: 1000 })

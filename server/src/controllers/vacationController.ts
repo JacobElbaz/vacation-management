@@ -127,21 +127,53 @@ export const getAllVacations = async (req: Request, res: Response, next: NextFun
 export const updateVacationStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { status, comments } = req.body;
+    const { status, comments, validatorId } = req.body;
 
-    // Check if vacation request exists
-    const vacation = await VacationRequest.findByPk(id);
+    // Validate that validatorId is provided
+    if (!validatorId) {
+      throw createError(400, "Validator ID is required");
+    }
+
+    // Check if validator exists and is a Validator
+    const validator = await User.findByPk(validatorId);
+    if (!validator) {
+      throw createError(404, "Validator not found");
+    }
+
+    const validatorData = validator.get({ plain: true }) as any;
+    if (validatorData.role !== "Validator") {
+      throw createError(403, "Only validators can approve or reject vacation requests");
+    }
+
+    // Check if vacation request exists with user information
+    const vacation = await VacationRequest.findByPk(id, {
+      include: [{ model: User, as: "User" }],
+    });
+    
     if (!vacation) {
       throw createError(404, "Vacation request not found");
     }
 
+    // Check if the validator is trying to approve their own request
+    const vacationData = vacation.get({ plain: true }) as any;
+    if (vacationData.user_id === validatorId) {
+      throw createError(403, "Validators cannot approve or reject their own vacation requests");
+    }
+
     // Check if the status is already the same
-    const currentStatus = (vacation.get({ plain: true }) as any).status;
+    const currentStatus = vacationData.status;
     if (currentStatus === status) {
       throw createError(400, `This vacation request is already ${status}`);
     }
 
-    await VacationRequest.update({ status, comments }, { where: { id } });
+    // Update the vacation request
+    await VacationRequest.update(
+      { 
+        status, 
+        comments,
+      }, 
+      { where: { id } }
+    );
 
     res.status(200).json({
       success: true,

@@ -1,8 +1,7 @@
 import { useState } from "react";
-import api from "../api/axiosInstance";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
-import type { User } from "../types";
+import { useAuth } from "../context/AuthContext";
+import { useVacationRequests } from "../context/VacationRequestsContext";
 
 interface RequestFormPopupProps {
   onClose: () => void;
@@ -14,15 +13,15 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
   const [endDate, setEndDate] = useState<string>("");
   const [reason, setReason] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { currentUser } = useAuth();
+  const { submitRequest } = useVacationRequests();
 
   const handleSubmit = async () => {
-    // Get current user from localStorage
-    const currentUserStr = localStorage.getItem("currentUser");
-    if (!currentUserStr) {
-      toast.error("User not found. Please select a user from the home page.");
+    // Get current user from context
+    if (!currentUser) {
+      toast.error("User not found. Please log in again.");
       return;
     }
-    const currentUser: User = JSON.parse(currentUserStr);
 
     // Validate dates
     if (!startDate || !endDate) {
@@ -51,30 +50,24 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
 
     setIsLoading(true);
     try {
-      await api.post("/vacations", {
-        user_id: currentUser.id,
+      const result = await submitRequest({
         start_date: startDate,
         end_date: endDate,
         reason: reason,
       });
-      toast.success("Vacation request submitted successfully");
-      // Reset form
-      setStartDate("");
-      setEndDate("");
-      setReason("");
-      onSuccess?.();
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        const errorMessage = error.response?.data?.message || 
-                           error.response?.data?.error ||
-                           error.response?.data?.errors?.[0]?.msg ||
-                           "Error submitting vacation request";
-        toast.error(errorMessage);
-      } else {
-        toast.error("Error submitting vacation request");
+      
+      if (result) {
+        // Reset form
+        setStartDate("");
+        setEndDate("");
+        setReason("");
+        onSuccess?.();
       }
+    } catch (error) {
+      console.error("Error submitting vacation request:", error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

@@ -11,7 +11,7 @@ const RequesterDashboard = () => {
 
   useEffect(() => {
     if (currentUser) {
-      loadMyRequests(currentUser.id);
+      loadMyRequests(); // No need to pass userId - uses currentUser from context
     }
   }, [currentUser, loadMyRequests]);
 
@@ -55,9 +55,7 @@ const RequesterDashboard = () => {
           onClose={() => setIsPopupOpen(false)}
           onSuccess={() => {
             setIsPopupOpen(false);
-            if (currentUser) {
-              refresh(currentUser.id);
-            }
+            refresh(); // No need to pass userId - uses currentUser from context
           }}
         />
       )}
