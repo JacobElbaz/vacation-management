@@ -6,9 +6,10 @@ import type { User } from "../types";
 
 interface RequestFormPopupProps {
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-const RequestFormPopup = ({ onClose }: RequestFormPopupProps) => {
+const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [reason, setReason] = useState<string>("");
@@ -32,11 +33,11 @@ const RequestFormPopup = ({ onClose }: RequestFormPopupProps) => {
         reason: reason,
       });
       toast.success("Vacation request submitted successfully");
-      onClose();
       // Reset form
       setStartDate("");
       setEndDate("");
       setReason("");
+      onSuccess?.();
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message || "Error submitting vacation request");

@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import RequestTable from "../components/RequestTable";
 import RequestFormPopup from "../components/RequestFormPopup";
+import useVacationRequests from "../hooks/useVacationRequests";
 
 const RequesterDashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const { currentUser, logout } = useAuth();
+  const { requests, isLoading, loadMyRequests, refresh } = useVacationRequests();
+
+  useEffect(() => {
+    if (currentUser) {
+      loadMyRequests(currentUser.id);
+    }
+  }, [currentUser, loadMyRequests]);
 
   const handleLogout = () => {
     logout();
@@ -37,9 +45,21 @@ const RequesterDashboard = () => {
       >
         Submit Vacation Request
       </button>
-      <RequestTable requests={[]} />
+      {isLoading ? (
+        <p>Loading vacation requests...</p>
+      ) : (
+        <RequestTable requests={requests} />
+      )}
       {isPopupOpen && (
-        <RequestFormPopup onClose={() => setIsPopupOpen(false)} />
+        <RequestFormPopup
+          onClose={() => setIsPopupOpen(false)}
+          onSuccess={() => {
+            setIsPopupOpen(false);
+            if (currentUser) {
+              refresh(currentUser.id);
+            }
+          }}
+        />
       )}
     </div>
   );
