@@ -34,19 +34,21 @@ vacation-management/
 
 ### Services
 
-Service  | Description             | Port 
-frontend | Vite development server | 5173
-backend  | Express API server      | 4000
-db       | PostgreSQL database     | 5432
+| Service | Description | Port |
+|---------|-------------|------|
+| frontend | Vite development server | 5173 |
+| backend | Express API server | 4000 |
+| db | PostgreSQL database | 5432 |
 
 ## ⚙️ Tech Stack
 
-Layer    | Technology
-Frontend | React (Vite), TypeScript, Axios
-Backend  | Node.js, Express.js, Sequelize ORM
-Database | PostgreSQL
-Runtime  | Docker Compose 
-Language | TypeScript 
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React (Vite), TypeScript, Axios |
+| Backend | Node.js, Express.js, Sequelize ORM |
+| Database | PostgreSQL |
+| Runtime | Docker Compose |
+| Language | TypeScript | 
 
 ## 🚀 Quick Start (with Docker)
 
