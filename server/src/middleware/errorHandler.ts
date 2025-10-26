@@ -31,6 +31,15 @@ export const errorHandler = (
     });
   }
 
+  // Sequelize database connection errors
+  if (err.name === "SequelizeConnectionError") {
+    return res.status(503).json({
+      success: false,
+      message: "Database connection error. Please try again later.",
+      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
+  }
+
   // Custom application errors
   if (err.statusCode) {
     return res.status(err.statusCode).json({
