@@ -1,4 +1,5 @@
 import type { VacationRequest } from "../../types";
+import TruncatedText from "../TruncatedText";
 
 interface TableRowProps {
   request: VacationRequest;
@@ -16,7 +17,13 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
         <td>{request.user_id}</td>
         <td>{request.start_date}</td>
         <td>{request.end_date}</td>
-        <td>{request.reason || "-"}</td>
+        <td>
+          {request.reason ? (
+            <TruncatedText text={request.reason} maxLength={30} />
+          ) : (
+            "-"
+          )}
+        </td>
         <td>
           <span
             className={`badge bg-${
@@ -32,9 +39,11 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
         </td>
         <td>
           {request.comments ? (
-            <span className={request.status === "Rejected" ? "text-danger" : ""}>
-              {request.comments}
-            </span>
+            <TruncatedText 
+              text={request.comments} 
+              maxLength={30}
+              className={request.status === "Rejected" ? "text-danger" : ""}
+            />
           ) : (
             "-"
           )}

@@ -1,4 +1,5 @@
 import type { VacationRequest } from "../types";
+import TruncatedText from "./TruncatedText";
 
 interface Props {
   requests: VacationRequest[];
@@ -23,7 +24,13 @@ const RequestTable = ({ requests }: Props) => {
             <td>{request.id}</td>
             <td>{request.start_date}</td>
             <td>{request.end_date}</td>
-            <td>{request.reason || "-"}</td>
+            <td>
+              {request.reason ? (
+                <TruncatedText text={request.reason} maxLength={40} />
+              ) : (
+                "-"
+              )}
+            </td>
             <td>
               <span
                 className={`badge bg-${
@@ -39,9 +46,11 @@ const RequestTable = ({ requests }: Props) => {
             </td>
             <td>
               {request.comments ? (
-                <span className={request.status === "Rejected" ? "text-danger" : ""}>
-                  {request.comments}
-                </span>
+                <TruncatedText 
+                  text={request.comments} 
+                  maxLength={40}
+                  className={request.status === "Rejected" ? "text-danger" : ""}
+                />
               ) : (
                 "-"
               )}
