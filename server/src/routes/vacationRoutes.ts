@@ -5,12 +5,19 @@ import {
   getAllVacations,
   updateVacationStatus,
 } from "../controllers/vacationController";
+import {
+  validateCreateVacation,
+  validateGetMyVacations,
+  validateGetAllVacations,
+  validateUpdateVacationStatus,
+  validateRequest,
+} from "../middleware/validation";
 
 const router = Router();
 
-router.post("/", createVacation);
-router.get("/me", getMyVacations);
-router.get("/", getAllVacations);
-router.patch("/:id", updateVacationStatus);
+router.post("/", validateCreateVacation, validateRequest, createVacation);
+router.get("/me", validateGetMyVacations, validateRequest, getMyVacations);
+router.get("/", validateGetAllVacations, validateRequest, getAllVacations);
+router.patch("/:id", validateUpdateVacationStatus, validateRequest, updateVacationStatus);
 
 export default router;

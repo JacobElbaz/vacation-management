@@ -4,6 +4,7 @@ import { sequelize } from "./config/db";
 import vacationRoutes from "./routes/vacationRoutes";
 import userRoutes from "./routes/userRoutes";
 import { seedDatabase } from "./seed";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 app.use(cors());
@@ -11,6 +12,9 @@ app.use(express.json());
 
 app.use("/api/vacations", vacationRoutes);
 app.use("/api/users", userRoutes);
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
