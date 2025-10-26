@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npm run dev & sleep 5 && npx ts-node src/seed.ts"]
