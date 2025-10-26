@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import VacationRequest from "../models/VacationRequest";
 import User from "../models/User";
 import { createError } from "../middleware/errorHandler";
+import { REQUEST_STATUS, USER_ROLES } from "../constants";
 import { Op } from "sequelize";
 
 export const createVacation = async (req: Request, res: Response, next: NextFunction) => {
@@ -33,7 +34,7 @@ export const createVacation = async (req: Request, res: Response, next: NextFunc
       where: {
         user_id,
         status: {
-          [Op.or]: ["Pending", "Approved"],
+          [Op.or]: [REQUEST_STATUS.PENDING, REQUEST_STATUS.APPROVED],
         },
       },
     });
@@ -144,7 +145,7 @@ export const updateVacationStatus = async (req: Request, res: Response, next: Ne
     }
 
     const validatorData = validator.get({ plain: true }) as any;
-    if (validatorData.role !== "Validator") {
+    if (validatorData.role !== USER_ROLES.VALIDATOR) {
       throw createError(403, "Only validators can approve or reject vacation requests");
     }
 

@@ -1,5 +1,6 @@
 import type { VacationRequest } from "../types";
 import TruncatedText from "./TruncatedText";
+import { REQUEST_STATUS } from "../constants";
 
 interface Props {
   requests: VacationRequest[];
@@ -34,9 +35,9 @@ const RequestTable = ({ requests }: Props) => {
             <td>
               <span
                 className={`badge bg-${
-                  request.status === "Approved"
+                  request.status === REQUEST_STATUS.APPROVED
                     ? "success"
-                    : request.status === "Rejected"
+                    : request.status === REQUEST_STATUS.REJECTED
                     ? "danger"
                     : "warning"
                 }`}
@@ -49,7 +50,7 @@ const RequestTable = ({ requests }: Props) => {
                 <TruncatedText 
                   text={request.comments} 
                   maxLength={40}
-                  className={request.status === "Rejected" ? "text-danger" : ""}
+                  className={request.status === REQUEST_STATUS.REJECTED ? "text-danger" : ""}
                 />
               ) : (
                 "-"

@@ -1,6 +1,7 @@
 import User from "./models/User";
 import VacationRequest from "./models/VacationRequest";
 import { sequelize } from "./config/db";
+import { USER_ROLES } from "./constants";
 
 export const seedDatabase = async () => {
   try {
@@ -10,8 +11,8 @@ export const seedDatabase = async () => {
     if (existingUsers.length === 0) {
       // Create seed data only if users don't exist
       await User.bulkCreate([
-        { name: "Alice", role: "Requester" },
-        { name: "Bob", role: "Validator" },
+        { name: "Alice", role: USER_ROLES.REQUESTER },
+        { name: "Bob", role: USER_ROLES.VALIDATOR },
       ]);
       console.log("✅ Seed complete: Created 2 users");
     } else {

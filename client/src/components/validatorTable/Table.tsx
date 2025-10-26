@@ -3,6 +3,7 @@ import type { VacationRequest } from "../../types";
 import PopupReject from "../PopupReject";
 import TableRow from "./TableRow";
 import { useVacationRequests } from "../../context/VacationRequestsContext";
+import { REQUEST_STATUS } from "../../constants";
 
 interface Props {
   requests: VacationRequest[];
@@ -20,7 +21,7 @@ const Table = ({ requests }: Props) => {
   
   const handleApprove = async (requestId: number) => {
     try {
-      await updateRequestStatus(requestId, { status: "Approved" });
+      await updateRequestStatus(requestId, { status: REQUEST_STATUS.APPROVED });
       await refresh();
     } catch (error) {
       console.error("Failed to approve request:", error);
@@ -29,7 +30,7 @@ const Table = ({ requests }: Props) => {
   
   const handleRejectConfirm = async (requestId: number, comments: string) => {
     await updateRequestStatus(requestId, { 
-      status: "Rejected", 
+      status: REQUEST_STATUS.REJECTED, 
       comments 
     });
     await refresh();

@@ -1,5 +1,6 @@
 import { body, query, param, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
+import { REQUEST_STATUS } from "../constants";
 
 export const validateCreateVacation = [
   body("user_id")
@@ -35,7 +36,7 @@ export const validateGetAllVacations = [
     .withMessage("Limit must be between 1 and 100"),
   query("status")
     .optional()
-    .isIn(["Pending", "Approved", "Rejected"])
+    .isIn([REQUEST_STATUS.PENDING, REQUEST_STATUS.APPROVED, REQUEST_STATUS.REJECTED])
     .withMessage("Status must be one of: Pending, Approved, Rejected"),
 ];
 
@@ -44,7 +45,7 @@ export const validateUpdateVacationStatus = [
     .isInt({ min: 1 })
     .withMessage("Vacation ID must be a positive integer"),
   body("status")
-    .isIn(["Pending", "Approved", "Rejected"])
+    .isIn([REQUEST_STATUS.PENDING, REQUEST_STATUS.APPROVED, REQUEST_STATUS.REJECTED])
     .withMessage("Status must be one of: Pending, Approved, Rejected"),
   body("validatorId")
     .isInt({ min: 1 })

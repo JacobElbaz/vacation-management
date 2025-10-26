@@ -1,5 +1,6 @@
 import type { VacationRequest } from "../../types";
 import TruncatedText from "../TruncatedText";
+import { REQUEST_STATUS } from "../../constants";
 
 interface TableRowProps {
   request: VacationRequest;
@@ -27,9 +28,9 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
         <td>
           <span
             className={`badge bg-${
-              request.status === "Approved"
+              request.status === REQUEST_STATUS.APPROVED
                 ? "success"
-                : request.status === "Rejected"
+                : request.status === REQUEST_STATUS.REJECTED
                 ? "danger"
                 : "warning"
             }`}
@@ -42,7 +43,7 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
             <TruncatedText 
               text={request.comments} 
               maxLength={30}
-              className={request.status === "Rejected" ? "text-danger" : ""}
+              className={request.status === REQUEST_STATUS.REJECTED ? "text-danger" : ""}
             />
           ) : (
             "-"
@@ -52,14 +53,14 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
           <button 
             className="btn btn-primary btn-sm" 
             onClick={handleApprove}
-            disabled={request.status === "Approved"}
+            disabled={request.status === REQUEST_STATUS.APPROVED}
           >
             Approve
           </button>
           <button 
             className="btn btn-outline-danger btn-sm" 
             onClick={() => onReject(request.id)}
-            disabled={request.status === "Rejected"}
+            disabled={request.status === REQUEST_STATUS.REJECTED}
           >
             Reject
           </button>

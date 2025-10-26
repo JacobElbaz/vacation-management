@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db";
 import User from "./User";
+import { REQUEST_STATUS } from "../constants";
 
 const VacationRequest = sequelize.define(
   "VacationRequest",
@@ -26,8 +27,8 @@ const VacationRequest = sequelize.define(
       allowNull: true,
     },
     status: {
-      type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
-      defaultValue: "Pending",
+      type: DataTypes.ENUM(REQUEST_STATUS.PENDING, REQUEST_STATUS.APPROVED, REQUEST_STATUS.REJECTED),
+      defaultValue: REQUEST_STATUS.PENDING,
       allowNull: false,
     },
     comments: {

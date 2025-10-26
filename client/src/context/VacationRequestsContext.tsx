@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import type { VacationRequest } from "../types";
 import { useAuth } from "./AuthContext";
+import { REQUEST_STATUS, USER_ROLES } from "../constants";
 
 interface SubmitRequestData {
   start_date: string;
@@ -15,7 +16,7 @@ interface SubmitRequestData {
 }
 
 interface UpdateRequestStatusData {
-  status: "Pending" | "Approved" | "Rejected";
+  status: typeof REQUEST_STATUS[keyof typeof REQUEST_STATUS];
   comments?: string;
   validatorId?: number; // Will be added automatically
 }
@@ -207,7 +208,7 @@ export const VacationRequestsProvider = ({ children }: { children: ReactNode }) 
     }
 
     // If user is a validator, load all requests; otherwise load my requests
-    if (currentUser.role === "Validator") {
+    if (currentUser.role === USER_ROLES.VALIDATOR) {
       await loadAllRequests(currentPage, 10, statusFilter || undefined);
     } else {
       await loadMyRequests();
