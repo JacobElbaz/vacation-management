@@ -80,10 +80,7 @@ export const getMyVacations = async (req: Request, res: Response, next: NextFunc
       order: [["created_at", "DESC"]],
     });
 
-    res.status(200).json({
-      success: true,
-      data: vacations,
-    });
+    res.status(200).json(vacations);
   } catch (error) {
     next(error);
   }
@@ -114,8 +111,6 @@ export const getAllVacations = async (req: Request, res: Response, next: NextFun
     const totalPages = Math.ceil(count / limit);
 
     res.status(200).json({
-      success: true,
-      data: {
         vacations,
         pagination: {
           currentPage: page,
@@ -123,8 +118,7 @@ export const getAllVacations = async (req: Request, res: Response, next: NextFun
           totalItems: count,
           itemsPerPage: limit,
         },
-      },
-    });
+      });
   } catch (error) {
     next(error);
   }
