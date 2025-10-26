@@ -1,4 +1,6 @@
-import { useState, useCallback } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useCallback } from "react";
+import type { ReactNode } from "react";
 import api from "../api/axiosInstance";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
@@ -16,7 +18,25 @@ interface UpdateRequestStatusData {
   comments?: string;
 }
 
-const useVacationRequests = () => {
+interface VacationRequestsContextType {
+  requests: VacationRequest[];
+  isLoading: boolean;
+  error: string | null;
+  submitRequest: (data: SubmitRequestData) => Promise<VacationRequest | null>;
+  updateRequestStatus: (
+    requestId: number,
+    data: UpdateRequestStatusData
+  ) => Promise<boolean>;
+  loadMyRequests: (userId: number) => Promise<void>;
+  loadAllRequests: () => Promise<void>;
+  refresh: (userId?: number) => Promise<void>;
+}
+
+const VacationRequestsContext = createContext<
+  VacationRequestsContextType | undefined
+>(undefined);
+
+export const VacationRequestsProvider = ({ children }: { children: ReactNode }) => {
   const [requests, setRequests] = useState<VacationRequest[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -133,17 +153,30 @@ const useVacationRequests = () => {
     [loadMyRequests, loadAllRequests]
   );
 
-  return {
-    requests,
-    isLoading,
-    error,
-    submitRequest,
-    updateRequestStatus,
-    loadMyRequests,
-    loadAllRequests,
-    refresh,
-  };
+  return (
+    <VacationRequestsContext.Provider
+      value={{
+        requests,
+        isLoading,
+        error,
+        submitRequest,
+        updateRequestStatus,
+        loadMyRequests,
+        loadAllRequests,
+        refresh,
+      }}
+    >
+      {children}
+    </VacationRequestsContext.Provider>
+  );
 };
 
-export default useVacationRequests;
-
+export const useVacationRequests = () => {
+  const context = useContext(VacationRequestsContext);
+  if (context === undefined) {
+    throw new Error(
+      "useVacationRequests must be used within a VacationRequestsProvider"
+    );
+  }
+  return context;
+};

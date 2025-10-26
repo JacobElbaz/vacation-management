@@ -1,7 +1,15 @@
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useVacationRequests } from "../context/VacationRequestsContext";
+import Table from "../components/validatorTable/Table";
 
 const ValidatorDashboard = () => {
     const { currentUser, logout } = useAuth();
+    const { requests, isLoading, loadAllRequests } = useVacationRequests();
+
+    useEffect(() => {
+        loadAllRequests();
+    }, [loadAllRequests]);
 
     const handleLogout = () => {
         logout();
@@ -26,7 +34,11 @@ const ValidatorDashboard = () => {
                     Logout
                 </button>
             </div>
-            <p className="lead">Coming soon: vacation request validation</p>
+            {isLoading ? (
+                <p>Loading vacation requests...</p>
+            ) : (
+                <Table requests={requests} />
+            )}
         </div>
     );
 };

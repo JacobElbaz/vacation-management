@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useVacationRequests } from "../context/VacationRequestsContext";
 import RequestTable from "../components/RequestTable";
 import RequestFormPopup from "../components/RequestFormPopup";
-import useVacationRequests from "../hooks/useVacationRequests";
 
 const RequesterDashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
