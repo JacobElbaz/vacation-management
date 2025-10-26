@@ -43,11 +43,6 @@ const RequestFormPopup = ({ onClose, onSuccess }: RequestFormPopupProps) => {
       return;
     }
 
-    if (!reason.trim()) {
-      toast.error("Please provide a reason");
-      return;
-    }
-
     setIsLoading(true);
     try {
       const result = await submitRequest({
