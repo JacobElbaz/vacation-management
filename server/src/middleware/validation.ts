@@ -12,8 +12,8 @@ export const validateCreateVacation = [
     .isDate()
     .withMessage("End date must be a valid date"),
   body("reason")
-    .trim()
     .optional()
+    .trim()
     .isLength({ max: 500 })
     .withMessage("If provided, reason must be less than 500 characters"),
 ];

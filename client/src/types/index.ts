@@ -5,6 +5,8 @@ export type VacationRequest = {
     end_date: string;
     reason: string;
     status: string;
+    comments?: string;
+    created_at?: string;
 }
 
 export type User = {

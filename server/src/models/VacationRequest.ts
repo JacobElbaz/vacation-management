@@ -23,7 +23,7 @@ const VacationRequest = sequelize.define(
     },
     reason: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM("Pending", "Approved", "Rejected"),

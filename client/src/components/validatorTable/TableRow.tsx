@@ -30,6 +30,15 @@ const TableRow = ({ request, onReject, onApprove }: TableRowProps) => {
             {request.status}
           </span>
         </td>
+        <td>
+          {request.comments ? (
+            <span className={request.status === "Rejected" ? "text-danger" : ""}>
+              {request.comments}
+            </span>
+          ) : (
+            "-"
+          )}
+        </td>
         <td className="d-flex gap-2">
           <button 
             className="btn btn-primary btn-sm" 

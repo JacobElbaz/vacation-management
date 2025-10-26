@@ -45,6 +45,7 @@ const Table = ({ requests }: Props) => {
           <th>End Date</th>
           <th>Reason</th>
           <th>Status</th>
+          <th>Comments</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -54,7 +55,7 @@ const Table = ({ requests }: Props) => {
         ))}
         {requests?.length === 0 && (
           <tr>
-            <td colSpan={7} className="text-center">
+            <td colSpan={8} className="text-center">
               No vacation requests found
             </td>
           </tr>

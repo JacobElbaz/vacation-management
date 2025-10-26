@@ -14,6 +14,7 @@ const RequestTable = ({ requests }: Props) => {
           <th>End Date</th>
           <th>Reason</th>
           <th>Status</th>
+          <th>Comments</th>
         </tr>
       </thead>
       <tbody>
@@ -36,11 +37,20 @@ const RequestTable = ({ requests }: Props) => {
                 {request.status}
               </span>
             </td>
+            <td>
+              {request.comments ? (
+                <span className={request.status === "Rejected" ? "text-danger" : ""}>
+                  {request.comments}
+                </span>
+              ) : (
+                "-"
+              )}
+            </td>
           </tr>
         ))}
         {requests?.length === 0 && (
           <tr>
-            <td colSpan={5} className="text-center">
+            <td colSpan={6} className="text-center">
               No vacation requests found
             </td>
           </tr>
