@@ -55,24 +55,41 @@ const ValidatorDashboard = () => {
             </div>
             
             {/* Status Filter */}
-            <div className="mb-3">
-                <label htmlFor="statusFilter" className="form-label">Filter by Status:</label>
-                <select
-                    id="statusFilter"
-                    className="form-select"
-                    style={{ maxWidth: "200px" }}
-                    value={statusFilter || "all"}
-                    onChange={handleStatusChange}
-                >
-                    <option value="all">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
+            <div className="card mb-3 shadow-sm">
+                <div className="card-body">
+                    <div className="row align-items-center">
+                        <div className="col-md-3">
+                            <label htmlFor="statusFilter" className="form-label fw-bold mb-2">
+                                🎯 Filter by Status
+                            </label>
+                            <select
+                                id="statusFilter"
+                                className="form-select shadow-sm"
+                                value={statusFilter || "all"}
+                                onChange={handleStatusChange}
+                            >
+                                <option value="all">📋 All Statuses</option>
+                                <option value="Pending">⏳ Pending</option>
+                                <option value="Approved">✅ Approved</option>
+                                <option value="Rejected">❌ Rejected</option>
+                            </select>
+                        </div>
+                        <div className="col-md-9">
+                            <div className="d-flex gap-2 mt-4">
+                                <span className="badge bg-secondary">Total: {requests.length}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {isLoading ? (
-                <p>Loading vacation requests...</p>
+                <div className="text-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <p className="mt-3 text-muted">Loading vacation requests...</p>
+                </div>
             ) : (
                 <>
                     <Table requests={requests} />

@@ -37,33 +37,42 @@ const Table = ({ requests }: Props) => {
   };
   return (
     <>
-    <table className="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Employee ID</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Reason</th>
-          <th>Status</th>
-          <th>Comments</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {requests?.map((request) => (
-          <TableRow key={request.id} request={request} onReject={handleReject} onApprove={handleApprove} />
-        ))}
-        {requests?.length === 0 && (
-          <tr>
-            <td colSpan={8} className="text-center">
-              No vacation requests found
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-    {popupRejectIsOpen && (
+      <div className="card shadow-sm">
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-hover mb-0">
+              <thead className="table-dark">
+                <tr>
+                  <th scope="col" className="px-3">#</th>
+                  <th scope="col">Employee ID</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col">Reason</th>
+                  <th scope="col" className="text-center">Status</th>
+                  <th scope="col">Comments</th>
+                  <th scope="col" className="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {requests?.map((request) => (
+                  <TableRow key={request.id} request={request} onReject={handleReject} onApprove={handleApprove} />
+                ))}
+                {requests?.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="text-center py-5">
+                      <div className="text-muted">
+                        <p className="fs-4">📭</p>
+                        <p className="mb-0">No vacation requests found</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {popupRejectIsOpen && (
         <PopupReject
           requestId={requestId ?? 0}
           onClose={() => setPopupRejectIsOpen(false)}
