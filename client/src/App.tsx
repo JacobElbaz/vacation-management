@@ -1,8 +1,25 @@
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router";
+import RequesterDashboard from "./pages/RequesterDashboard";
+import ValidatorDashboard from "./pages/ValidatorDashboard";
+import NotFound from "./pages/NotFound";
+
 function App() {
   return (
-    <>
-      <h1>Vacation Management System</h1>
-    </>
+    <Router>
+      <Routes>
+        {/* Default redirect */}
+        <Route path="/" element={<Navigate to="/requester" />} />
+        
+        {/* Requester Interface */}
+        <Route path="/requester" element={<RequesterDashboard />} />
+        
+        {/* Validator Interface */}
+        <Route path="/validator" element={<ValidatorDashboard />} />
+        
+        {/* 404 Page */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   )
 }
 
