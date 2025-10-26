@@ -1,39 +1,14 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import RequestTable from "../components/RequestTable";
 import RequestFormPopup from "../components/RequestFormPopup";
-import type { User } from "../types";
 
 const RequesterDashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const userStr = localStorage.getItem("currentUser");
-    if (!userStr) {
-      navigate("/");
-      return;
-    }
-    const user: User = JSON.parse(userStr);
-    
-    // Check if user has the correct role for this page
-    if (user.role !== "Requester") {
-      // Redirect to the appropriate dashboard based on role
-      if (user.role === "Validator") {
-        navigate("/validator");
-      } else {
-        navigate("/");
-      }
-      return;
-    }
-    
-    setCurrentUser(user);
-  }, [navigate]);
+  const { currentUser, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    navigate("/");
+    logout();
   };
 
   if (!currentUser) {

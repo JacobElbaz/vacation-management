@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosInstance";
 import type { User } from "../types";
 
 const Home = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const { currentUser, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is already logged in
-    const currentUserStr = localStorage.getItem("currentUser");
-    if (currentUserStr) {
-      const currentUser: User = JSON.parse(currentUserStr);
-      // Redirect to appropriate dashboard
+    // If user is already logged in, redirect to appropriate dashboard
+    if (currentUser) {
       if (currentUser.role === "Requester") {
         navigate("/requester");
       } else {
@@ -23,7 +22,7 @@ const Home = () => {
     }
     
     fetchUsers();
-  }, [navigate]);
+  }, [currentUser, navigate]);
 
   const fetchUsers = async () => {
     try {
@@ -37,15 +36,7 @@ const Home = () => {
   };
 
   const handleUserSelect = (user: User) => {
-    // Store selected user in localStorage
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    
-    // Navigate to appropriate dashboard
-    if (user.role === "Requester") {
-      navigate("/requester");
-    } else {
-      navigate("/validator");
-    }
+    login(user);
   };
 
   const requesters = users.filter((user) => user.role === "Requester");
